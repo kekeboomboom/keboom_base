@@ -23,8 +23,6 @@ public class Father {
 
   private List<String> sonsName;
 
-  private Set<Integer> sonsAge;
-
   // 暂时规定 map 中 key 和 value 都是 string 吧
   private Map<String, String> sonsFav;
 

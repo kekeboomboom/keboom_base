@@ -1,22 +1,19 @@
 package keboom.dom4j;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.primitives.Doubles;
-import com.google.common.primitives.Longs;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Set;
 import keboom.dom4j.BasicType.Father;
 import keboom.dom4j.BasicType.GrandSon;
 import keboom.dom4j.BasicType.Son;
@@ -40,7 +37,6 @@ public class Test {
     father.setName("hehe");
     father.setSex(true);
     father.setSonsName(Lists.newArrayList("keek", "goujie", "chenzelei"));
-    father.setSonsAge(Sets.newHashSet(1, 2, 3));
     HashMap<String, String> hashMap = new HashMap<>();
     hashMap.put("ke1", "va1");
     hashMap.put("ke2", "va2");
@@ -98,18 +94,19 @@ public class Test {
         element.setText(entry.getValue().toString());
       } else if (entryValue instanceof Collection) {
         // 假设list中都是基本类型
-        Element element = null;
-        if (entryValue instanceof List) {
-          element = root.addElement("list");
-        } else if (entryValue instanceof Set) {
-          element = root.addElement("set");
-        }
+
+//        if (entryValue instanceof List) {
+//          element = root.addElement("list");
+//        } else if (entryValue instanceof Set) {
+//          element = root.addElement("set");
+//        }
+        Element element = root.addElement(entry.getKey());
         for (Object o : ((Collection<?>) entryValue)) {
-          Element listEle = element.addElement(entry.getKey());
+          Element listEle = element.addElement("element");
           listEle.setText(o.toString());
         }
       } else if (entryValue instanceof Map) {
-        Element element = root.addElement("map");
+        Element element = root.addElement(entry.getKey());
         for (Entry<?, ?> mapEntry : ((Map<?, ?>) entryValue).entrySet()) {
           Element mapEle = element.addElement((String) mapEntry.getKey());
           mapEle.setText((String) mapEntry.getValue());
@@ -177,6 +174,27 @@ public class Test {
   }
 
 
+
+
+
+  /*
+  <xml>
+  <sonsFav>
+    <ke1>va1</ke1>
+    <ke2>va2</ke2>
+  </sonsFav>
+  <money>55050</money>
+  <sonsName>
+    <element>keek</element>
+    <element>goujie</element>
+    <element>chenzelei</element>
+  </sonsName>
+  <sex>true</sex>
+  <name>hehe</name>
+  <id>555</id>
+  <height>12.5</height>
+</xml>
+   */
   public static Map<String, Object> fromXmlToMap(String xml, Class beanClass) {
     if (StringUtils.isEmpty(xml)) {
       return null;
@@ -189,14 +207,20 @@ public class Test {
 
      */
     try {
+
       Document document = DocumentHelper.parseText(xml);
       Element root = document.getRootElement();
-      Element aClass = root.element("class");
 
+      generateMapByElement(root, beanClass);
 
+      System.out.println("ahah");
 
-      List children = root.elements();
+//      List children = root.elements();
     } catch (DocumentException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
       e.printStackTrace();
     }
 
@@ -265,6 +289,74 @@ public class Test {
 //    }
 //    return null;
     return null;
+  }
+
+  private static Map<String, Object> generateMapByElement(Element root, Class beanClass)
+      throws InstantiationException, IllegalAccessException {
+    HashMap<String, Object> resultMap = new HashMap<>();
+    Field[] fields = beanClass.getDeclaredFields();
+    for (Field field : fields) {
+      field.setAccessible(true);
+      String fieldName = field.getName();
+      Class<?> fieldType = field.getType();
+      Element element = root.element(fieldName);
+      if (fieldType.equals(Long.class)) {
+        resultMap.put(fieldName, Long.parseLong(element.getText()));
+      } else if (fieldType.equals(Integer.class)) {
+        resultMap.put(fieldName, Integer.parseInt(element.getText()));
+      } else if (fieldType.equals(String.class)) {
+        resultMap.put(fieldName, element.getText());
+      } else if (fieldType.equals(Double.class)) {
+        resultMap.put(fieldName, Double.parseDouble(element.getText()));
+      } else if (fieldType.equals(Byte.class)) {
+        resultMap.put(fieldName, Byte.parseByte(element.getText()));
+      } else if (fieldType.equals(Boolean.class)) {
+        resultMap.put(fieldName, Boolean.parseBoolean(element.getText()));
+      } else if (fieldType.equals(Short.class)) {
+        resultMap.put(fieldName, Short.parseShort(element.getText()));
+      } else if (fieldType.equals(Float.class)) {
+        resultMap.put(fieldName, Float.parseFloat(element.getText()));
+      } else if (fieldType.equals(List.class)) {
+        Type genericType = field.getGenericType();
+//        if (genericType == null) {
+//          continue;
+//        }
+        if (genericType instanceof ParameterizedType) {
+          ParameterizedType pt = (ParameterizedType) genericType;
+          // 得到泛型里的class类型对象
+          Class<?> actualTypeArgument = (Class<?>) pt.getActualTypeArguments()[0];
+
+          List<Element> elementList = element.elements();
+          // 先只支持 integer 和 string
+          if (actualTypeArgument.equals(Integer.class)) {
+            ArrayList<Integer> curEleList = new ArrayList<>();
+            for (Element ele : elementList) {
+              curEleList.add(Integer.parseInt(ele.getText()));
+            }
+            resultMap.put(fieldName, curEleList);
+          } else { // 先只支持那两种，因此不是 integer 就是 string 了哈。。
+            ArrayList<String> curEleList = new ArrayList<>();
+            for (Element ele : elementList) {
+              curEleList.add(ele.getText());
+            }
+            resultMap.put(fieldName, curEleList);
+          }
+        }
+      } else if (fieldType.equals(Map.class)) { // set 不去支持了，仅仅支持 list 吧。  map 也先仅仅支持 string，string 吧。
+        HashMap<String, String> hashMap = new HashMap<>();
+        List<Element> elements = element.elements();
+        for (Element ele : elements) {
+          hashMap.put(ele.getName(), ele.getText());
+        }
+        resultMap.put(fieldName, hashMap);
+      } else { // 那么排除基本类型，还有 list set map ，那么应该就剩我们自定义的对象了
+        Map<String, Object> objectMap = generateMapByElement(element, fieldType);
+        Object o = XmlUtils.fromMapToBean(objectMap, fieldType);
+        resultMap.put(fieldName, o);
+      }
+    }
+
+    return resultMap;
   }
 
 //  private
