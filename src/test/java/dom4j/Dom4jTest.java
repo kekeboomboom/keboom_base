@@ -11,6 +11,7 @@ import keboom.dom4j.BasicType.Father;
 import keboom.dom4j.BasicType.GrandSon;
 import keboom.dom4j.ConvertUtils;
 import keboom.dom4j.XmlUtils;
+import keboom.streamd.Person;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -171,5 +172,12 @@ public class Dom4jTest {
     System.out.println(grandSon);
 
 
+  }
+
+  @Test
+  public void test() {
+    Person ke = new Person("ke", 2);
+    String name = ke.getClass().getName();
+    System.out.println(name);
   }
 }

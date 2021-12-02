@@ -1,6 +1,7 @@
 package datetime;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 import java.util.Date;
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Test;
 
 public class Demo1 {
@@ -110,12 +112,30 @@ public class Demo1 {
     LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
 
 
-
-
-
   }
 
 
+  @Test
+  public void duration() {
+    Duration between = Duration.between(LocalTime.NOON, LocalTime.now());
+    System.out.println(between.get(ChronoUnit.SECONDS));
 
+    Duration duration = Duration.ofMillis(50);
+    System.out.println(duration.toMillis());
+  }
+
+  @Test
+  public void compare() {
+    Date now = new Date();
+    Date yesterday = DateUtils.addDays(now, -1);
+    // i 只有 0 1 -1 这三种
+    int i = now.compareTo(yesterday);
+    if (i > 0) {
+      System.out.println("今天 自然比昨天大呀！");
+    } else {
+      System.out.println("不对经");
+    }
+    System.out.println();
+  }
 
 }

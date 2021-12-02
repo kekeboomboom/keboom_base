@@ -48,4 +48,10 @@ public class Demo1 {
     set.forEach(System.out::println);
   }
 
+  @Test
+  public void em() {
+    Sex man = Sex.of("man");
+    System.out.println(man);
+  }
+
 }

@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 public class Demo {
 
+  private IDemo test;
+
   public static void main(String[] args) {
 //    ArrayList<String> list = new ArrayList<>();
 //    list.add("ads");
