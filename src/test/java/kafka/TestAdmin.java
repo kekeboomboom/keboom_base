@@ -29,7 +29,7 @@ public class TestAdmin {
   @Before
   public void setup() {
     Properties prop = new Properties();
-    prop.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,"10.1.4.32:9092");
+    prop.setProperty(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG,"10.1.4.31:9092");
 
     adminClient = AdminClient.create(prop);
   }

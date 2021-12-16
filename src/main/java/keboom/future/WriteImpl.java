@@ -2,6 +2,7 @@ package keboom.future;
 
 import java.util.function.Function;
 import java.util.function.Supplier;
+import keboom.future.impl.HamerImpl;
 
 public class WriteImpl {
 
@@ -24,6 +25,9 @@ public class WriteImpl {
    public static void main(String[] args) {
       WriteImpl write = new WriteImpl();
       write.fetch();
+
+      Hamer hamer = new HamerImpl();
+      hamer.hit(3);
    }
 
 }

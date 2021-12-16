@@ -26,6 +26,8 @@ public class Demo {
     personArrayList.add(new Person("hy",25));
     personArrayList.add(new Person("oe",27));
 
+//    personArrayList.stream().map();
+
 //    List<Integer> e = personArrayList.stream().filter(person -> person.getName().endsWith("e"))
 //        .map(person -> ).collect(Collectors.toList());
 //    System.out.println(e);
