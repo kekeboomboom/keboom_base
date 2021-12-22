@@ -2,6 +2,8 @@ package keboom.streamd;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Demo {
@@ -31,6 +33,10 @@ public class Demo {
 //    List<Integer> e = personArrayList.stream().filter(person -> person.getName().endsWith("e"))
 //        .map(person -> ).collect(Collectors.toList());
 //    System.out.println(e);
+
+
+//    Map<String, Person> collect = personArrayList.stream()
+//        .collect(Collectors.toMap(Person::getName, Function.identity()));
   }
 
 }

@@ -32,6 +32,7 @@ public class ProducerTest {
     prop.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
     prop.setProperty(ProducerConfig.RETRIES_CONFIG, "10");
     prop.setProperty(ProducerConfig.CLIENT_ID_CONFIG, "producer.client.id");
+    prop.setProperty(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,ProducerInterceptorPrefix.class.getName());
 
     producer = new KafkaProducer<String, String>(prop);
 
@@ -43,7 +44,7 @@ public class ProducerTest {
    */
   @Test
   public void sendSync() throws ExecutionException, InterruptedException {
-    producer.send(new ProducerRecord<>("keboom", "key", "value")).get();
+    RecordMetadata recordMetadata = producer.send(new ProducerRecord<>("keboom", "key", "wdnmd")).get();
 
 /*  如果想获取元信息
     Future<RecordMetadata> future = producer.send(new ProducerRecord<>("keboom", "key", "value"));

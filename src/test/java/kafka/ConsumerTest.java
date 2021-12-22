@@ -34,15 +34,16 @@ public class ConsumerTest {
   }
 
   @Test
-  public void rev() {
+  public void rev() throws InterruptedException {
     consumer.subscribe(Collections.singletonList("keboom"));
     while (true) {
       ConsumerRecords<String, String> poll = consumer.poll(Duration.ofSeconds(3));
       Iterable<ConsumerRecord<String, String>> iterable = poll.records("keboom");
       iterable.forEach(System.out::println);
-      if (poll.isEmpty()) {
-        break;
-      }
+//      if (poll.isEmpty()) {
+//        break;
+//      }
+      Thread.sleep(1000);
     }
   }
 
