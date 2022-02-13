@@ -1,5 +1,6 @@
 package kafka;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -32,9 +33,9 @@ public class ProducerTest {
     prop.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
     prop.setProperty(ProducerConfig.RETRIES_CONFIG, "10");
     prop.setProperty(ProducerConfig.CLIENT_ID_CONFIG, "producer.client.id");
-    prop.setProperty(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,ProducerInterceptorPrefix.class.getName());
+//    prop.setProperty(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG,ProducerInterceptorPrefix.class.getName());
 
-    producer = new KafkaProducer<String, String>(prop);
+    producer = new KafkaProducer<>(prop);
 
   }
 

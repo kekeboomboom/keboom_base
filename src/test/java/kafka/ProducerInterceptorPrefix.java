@@ -1,11 +1,13 @@
 package kafka;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerInterceptor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.junit.Test;
 
 /**
  *
@@ -51,4 +53,17 @@ public class ProducerInterceptorPrefix implements ProducerInterceptor<String, St
   public void configure(Map<String, ?> configs) {
 
   }
+
+
+  @Test
+  public void reflection()
+      throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
+    String name = ProducerInterceptorPrefix.class.getName();
+    System.out.println(name);
+
+    Class<ProducerInterceptorPrefix> aClass = ProducerInterceptorPrefix.class;
+    ProducerInterceptorPrefix instance = aClass.getDeclaredConstructor().newInstance();
+    System.out.println(instance);
+  }
+
 }
