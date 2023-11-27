@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<blogBean>
-    <id>1</id>
-    <name>ke</name>
-    <subBlog>
-        <subName>boom</subName>
-    </subBlog>
-</blogBean>
